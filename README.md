@@ -1,35 +1,35 @@
 Click here for code link : https://drive.google.com/drive/folders/1ukb7MozqcuRwNtNvmTX6Yl5IT-557o02?usp=drive_link
 
-
-
-Here is your complete GitHub README:
-
----
-
-**Create a new file called README.md in your project root and paste this:**
-
-```markdown
 # 🔍 FinTech Compliance System
 
-> An end-to-end financial crime prevention system combining Machine Learning, AML Monitoring, Generative AI, RAG, and KYC Verification — built to simulate real-world fintech compliance workflows.
+A end-to-end financial crime detection system built to simulate real-world fintech compliance workflows.
 
-
----
-
-## 📌 Overview
-
-Most fraud detection projects stop at predicting whether a transaction is fraudulent. This project goes further by building a five layer compliance system that detects both fraud and money laundering, generates AI powered compliance alerts, answers AML policy questions grounded in FATF regulatory documents, and automates KYC document verification — all in one live dashboard.
+> Built as a portfolio project targeting fintech compliance roles — covers Fraud Detection, AML Monitoring, GenAI Alert Summarization, RAG Policy Q&A, and KYC Verification.
 
 ---
 
-## 🎯 Built For
+## 🎯 What This Project Does
 
-This project directly maps to the core workflow of fintech compliance teams working on:
-- Financial Fraud Detection
-- Anti-Money Laundering (AML) initiatives
-- Know Your Customer (KYC) procedures
-- Generative AI and LLM applications
-- RAG pipelines for document analysis and alert summarization
+Most fraud detection projects stop at predicting whether a transaction is fraudulent. This project goes further by adding four additional compliance layers on top — combining everything into a single live dashboard.
+
+| Layer | What It Does |
+|-------|-------------|
+| 🤖 ML Fraud Detection | XGBoost model scores every transaction for fraud probability |
+| 🚨 AML Monitoring | Rule-based engine catches money laundering patterns ML misses |
+| 💬 GenAI Alerts | Gemini LLM writes compliance alert paragraphs for flagged transactions |
+| 📚 RAG Policy Q&A | Ask AML questions answered from FATF policy documents via Pinecone |
+| 🪪 KYC Verification | Extract and validate customer identity fields from documents |
+
+---
+
+## 🖥️ Dashboard Preview
+
+| Page | Description |
+|------|-------------|
+| 📊 Transaction Scoring | Upload CSV → get fraud scores, AML flags, risk levels |
+| 🚨 Alert Summary | Click any HIGH/CRITICAL transaction → auto-generated compliance alert |
+| 💬 AML Policy Q&A | Ask compliance questions grounded in FATF policy |
+| 🪪 KYC Verification | Upload KYC document → extract fields → validate risk |
 
 ---
 
@@ -38,220 +38,158 @@ This project directly maps to the core workflow of fintech compliance teams work
 ```
 fintech-compliance-system/
 │
-├── fraud_detection.ipynb        # Module 1 — ML Fraud Detection
-├── aml_layer.ipynb              # Module 2 — AML Rule Monitoring
-├── genai_alert.ipynb            # Module 3 — GenAI Alert Summarization
-├── rag_aml_policy.ipynb         # Module 4 — RAG Policy Q&A
-├── kyc_module.ipynb             # Module 5 — KYC Verification
-├── app.py                       # Streamlit Dashboard
+├── fraud_detection.ipynb       # Module 1 — ML fraud model
+├── aml_layer.ipynb             # Module 2 — AML rule engine
+├── genai_alert.ipynb           # Module 3 — GenAI alert generation
+├── rag_aml_policy.ipynb        # Module 4 — RAG pipeline
+├── kyc_module.ipynb            # Module 5 — KYC verification
+├── app.py                      # Streamlit dashboard
 │
-├── fraud_detector_model.pkl     # Saved XGBoost Model
-├── scaler.pkl                   # Saved StandardScaler
-│
-├── test_transactions.csv        # Sample test dataset
-├── kyc_docs/                    # Sample KYC documents
-│   ├── KYC_001.txt
-│   ├── KYC_002.txt
-│   ├── KYC_003.txt
-│   ├── KYC_004.txt
-│   └── KYC_005.txt
+├── fraud_detector_model.pkl    # Saved XGBoost model
+├── scaler.pkl                  # Saved StandardScaler
 │
 └── README.md
 ```
 
 ---
 
-## ⚙️ System Architecture
+## ⚙️ How Each Module Works
 
-```
-Raw Transactions
-      ↓
-XGBoost Fraud Model → Fraud Probability Score
-      ↓
-AML Rule Engine → Structuring + Round Amount + Velocity Flags
-      ↓
-Combined Risk Scorer → LOW / MEDIUM / HIGH / CRITICAL
-      ↓
-GenAI Alert (Gemini) → Compliance Alert Paragraph
-      ↓
-RAG Policy Q&A (Pinecone + FATF) → Regulatory Justification
-      ↓
-KYC Module → Field Extraction + Validation
-      ↓
-Streamlit Dashboard → 4 Page Live Interface
-```
+### Module 1 — ML Fraud Detection
+- Dataset: Kaggle Credit Card Fraud (284,807 transactions, 0.17% fraud)
+- Handled class imbalance using SMOTE
+- Trained XGBoost classifier
+- Output: fraud probability score (0.0 to 1.0) per transaction
+- Performance: ROC-AUC > 0.99
 
----
+### Module 2 — AML Rule Engine
+Three rules applied on top of the ML scores:
 
-## 📦 Module Breakdown
+| Rule | What It Catches |
+|------|----------------|
+| Structuring Flag | Amount between $8,000–$9,999 (below reporting threshold) |
+| Round Amount Flag | Amount exactly divisible by 500 |
+| Velocity Flag | Same pattern repeated 3+ times in short window |
 
-### Module 1 — Machine Learning Fraud Detection
-- Dataset: Kaggle Credit Card Fraud Detection (284,807 transactions)
-- Severe class imbalance handled with SMOTE oversampling
-- Model: XGBoost Classifier with scale_pos_weight=200
-- Output: Fraud probability score (0.0 to 1.0) per transaction
-- Performance: ROC-AUC above 0.99
-
-### Module 2 — AML Rule Based Monitoring
-
-Three compliance rules applied on top of the ML model:
-
-| Rule | Detection | Real World Pattern |
-|---|---|---|
-| Structuring Flag | Amount $8,000–$9,999 | Deliberately staying below $10,000 reporting threshold |
-| Round Amount Flag | Amount divisible by 500 | Deliberate money movement not organic spending |
-| Velocity Flag | Same pattern 3+ times in short window | Layering to obscure money origin |
-
-Combined Risk Formula:
+Combined risk formula:
 ```
 combined_risk = (fraud_probability × 0.7) + (aml_flag_count × 0.1)
 ```
 
 | Score | Risk Level | Action |
-|---|---|---|
+|-------|-----------|--------|
 | 0.00 – 0.29 | 🟢 LOW | ALLOW |
 | 0.30 – 0.59 | 🟡 MEDIUM | ALLOW |
 | 0.60 – 0.84 | 🟠 HIGH | REVIEW |
 | 0.85 – 1.00 | 🔴 CRITICAL | BLOCK |
 
 ### Module 3 — GenAI Alert Summarization
-- Every HIGH and CRITICAL transaction gets a professional compliance alert
-- Generated by Gemini LLM acting as a senior compliance analyst
-- Output mirrors real compliance case management system narratives
-- Covers what was flagged, what crime it is consistent with, and recommended action
+- Takes every HIGH/CRITICAL transaction
+- Sends transaction details to Gemini LLM
+- Generates a 2-sentence professional compliance alert
+- Stored alongside each flagged transaction
 
-### Module 4 — RAG Pipeline for AML Policy Q&A
+### Module 4 — RAG Pipeline
 - FATF 40 Recommendations PDF processed using PyMuPDF
-- Document chunked into 500 character segments with 50 character overlap
-- Chunks embedded using all-MiniLM-L6-v2 sentence transformer
-- Embeddings stored in Pinecone vector database
-- Questions answered by Gemini grounded in retrieved policy context only
-- Flagged transactions automatically queried for regulatory justification
+- Chunked and embedded using all-MiniLM-L6-v2
+- Stored in Pinecone vector database
+- User asks question → Pinecone retrieves relevant policy → Gemini answers
 
-### Module 5 — KYC Document Verification
-- Supports PDF and TXT KYC documents
-- Gemini extracts: Full Name, Date of Birth, National ID, Address, ID Expiry
-- Validation checks: Age under 18, Expired ID, Expiring within 90 days, Missing fields
-- Output: CLEAR / MEDIUM RISK / HIGH RISK / REVIEW with detailed check results
-
----
-
-## 🖥️ Streamlit Dashboard
-
-### Page 1 — Transaction Scoring
-Upload any transaction CSV and instantly see fraud scores, AML flags, combined risk scores, risk levels, and recommended actions in a color coded table. Download the full scored dataset.
-
-### Page 2 — Alert Summary
-Select any HIGH or CRITICAL transaction from a dropdown. View all transaction details and AML flags. Click one button to generate a professional Gemini powered compliance alert paragraph.
-
-### Page 3 — AML Policy Q&A
-Type any AML compliance question or click a sample question. The RAG system retrieves relevant FATF policy chunks from Pinecone and Gemini generates a grounded answer. Full conversation history maintained.
-
-### Page 4 — KYC Verification
-Upload any KYC document in PDF or TXT format. Gemini extracts all fields automatically. Validation checks run instantly showing green ticks for passed checks and red crosses for violations. Final KYC status displayed as a colored banner.
+### Module 5 — KYC Verification
+- Reads PDF or TXT KYC documents
+- Gemini extracts: Name, DOB, National ID, Address, Expiry Date
+- Validates: age (must be 18+), ID expiry, missing fields
+- Returns: CLEAR / MEDIUM RISK / HIGH RISK / REVIEW
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Category | Technology |
-|---|---|
-| Language | Python 3.10 |
-| ML Model | XGBoost |
-| Preprocessing | Scikit-learn, Pandas, NumPy |
-| Class Balancing | SMOTE (imbalanced-learn) |
-| PDF Processing | PyMuPDF (fitz) |
+| Category | Tools |
+|----------|-------|
+| ML Model | XGBoost, Scikit-learn, imbalanced-learn (SMOTE) |
+| Data | Pandas, NumPy |
+| PDF Reading | PyMuPDF (fitz) |
 | Embeddings | Sentence Transformers (all-MiniLM-L6-v2) |
-| Vector Database | Pinecone |
-| LLM | Google Gemini API |
+| Vector DB | Pinecone |
+| LLM | Google Gemini API (gemini-2.0-flash-lite) |
 | Dashboard | Streamlit |
 | Deployment | Pyngrok + Google Colab |
-| Storage | Google Drive |
-
----
-
-## 📊 Model Performance
-
-| Metric | Score |
-|---|---|
-| ROC-AUC | 0.99+ |
-| Precision (Fraud) | High |
-| Recall (Fraud) | High |
-| F1 Score (Fraud) | 0.85+ |
+| Storage | Google Drive, Joblib |
 
 ---
 
 ## 🚀 How to Run
 
-### Step 1 — Clone the Repository
+**Step 1 — Clone the repo**
 ```bash
 git clone https://github.com/yourusername/fintech-compliance-system.git
 ```
 
-### Step 2 — Open in Google Colab
-Upload all notebooks to Google Colab and mount your Google Drive.
-
-### Step 3 — Install Dependencies
+**Step 2 — Install dependencies**
 ```bash
 pip install xgboost scikit-learn imbalanced-learn pandas numpy pymupdf
-pip install pinecone-client sentence-transformers google-generativeai
-pip install streamlit joblib pyngrok
+pip install sentence-transformers pinecone-client google-generativeai streamlit pyngrok joblib
 ```
 
-### Step 4 — Add API Keys
-In app.py set your Gemini API key from aistudio.google.com and your Pinecone API key from app.pinecone.io.
+**Step 3 — Add your API keys in app.py**
+```python
+GEMINI_API_KEY   = "your_gemini_api_key"
+PINECONE_API_KEY = "your_pinecone_api_key"
+```
 
-### Step 5 — Run Notebooks in Order
-Run fraud_detection.ipynb first to train and save the model. Then run aml_layer.ipynb, genai_alert.ipynb, and rag_aml_policy.ipynb in order.
+**Step 4 — Run notebooks in order**
+1. `fraud_detection.ipynb` — trains and saves the model
+2. `aml_layer.ipynb` — scores transactions with AML flags
+3. `genai_alert.ipynb` — generates compliance alerts
+4. `rag_aml_policy.ipynb` — uploads FATF policy to Pinecone
+5. `kyc_module.ipynb` — processes KYC documents
 
-### Step 6 — Launch Dashboard
+**Step 5 — Launch the dashboard**
 ```bash
 streamlit run app.py
 ```
 
 ---
 
-## 💡 Key Insights
+## 🔑 Get Free API Keys
 
-A transaction can score LOW fraud probability but still be flagged HIGH risk due to AML rules. This is exactly how real compliance systems work — fraud and money laundering are two different crimes requiring two different detection approaches. Combining both into one system is what makes this project unique.
-
----
-
-## 🌍 Real World Relevance
-
-| This System | Real Bank Equivalent |
-|---|---|
-| XGBoost Fraud Model | Real-time fraud engine |
-| AML Rule Layer | Transaction Monitoring System (TMS) |
-| Combined Risk Score | Daily compliance analyst review queue |
-| GenAI Alerts | Automated case narrative generation |
-| RAG Policy Q&A | Regulatory knowledge base |
-| KYC Module | Automated customer onboarding verification |
+| Service | Link |
+|---------|------|
+| Gemini API | https://aistudio.google.com |
+| Pinecone | https://app.pinecone.io |
+| Ngrok | https://dashboard.ngrok.com |
 
 ---
 
-## 🔮 Future Enhancements
+## 📊 Model Performance
 
-- [ ] Network graph analysis for detecting money mule networks
-- [ ] Real time transaction streaming using Apache Kafka
-- [ ] SAR (Suspicious Activity Report) auto generation
-- [ ] Multi-language KYC document support
-- [ ] Enhanced entity resolution for customer deduplication
+| Metric | Score |
+|--------|-------|
+| ROC-AUC | > 0.99 |
+| Precision (Fraud) | > 0.85 |
+| F1 Score (Fraud) | > 0.85 |
+
+---
+
+## 💡 Key Insight
+
+A transaction can have **low fraud probability but still be HIGH risk** due to AML flags.
+
+Example: A $9,500 transaction scores 0.15 fraud probability (looks clean to ML) but triggers the structuring flag, pushing the combined risk score to 0.65 → **HIGH RISK → REVIEW**.
+
+This is exactly the gap between fraud detection and AML compliance — and why both layers are needed.
 
 ---
 
 ## 👤 Author
 
-Data Science Trainer and Practitioner
-Built as a fintech compliance portfolio project demonstrating applied ML, GenAI, RAG, and compliance domain knowledge.
+**Data Science Trainer | FinTech Compliance Portfolio Project**
+
+Built to demonstrate applied data science for financial crime prevention roles in fintech.
 
 ---
 
 ## 📄 License
 
-MIT License — free to use and modify with attribution.
-
----
-
-## ⭐ If this project helped you, please give it a star on GitHub!
-```
+MIT License
