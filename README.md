@@ -1,148 +1,259 @@
 Click here for code link : https://drive.google.com/drive/folders/1ukb7MozqcuRwNtNvmTX6Yl5IT-557o02?usp=drive_link
-# Fraud_Detection
-Credit Card Fraud Detection is a machine learning project that identifies fraudulent transactions using a real-world dataset. It applies SMOTE for data balancing, compares Logistic Regression and Random Forest models, evaluates performance with fraud-specific metrics, and deploys the best model as a Streamlit web app for real-time fraud prediction.
-# 💳 Credit Card Fraud Detection
-
-A machine learning project that detects fraudulent credit card transactions and deploys the model as an interactive web app using **Streamlit**.
+Here is your complete GitHub README:
 
 ---
 
-## 📌 Project Description
+**Create a new file called README.md in your project root and paste this:**
 
-Credit card fraud causes billions of dollars in losses every year, and fraudulent transactions make up a tiny fraction of all transactions — making them hard to detect with simple rules. This project builds a complete, beginner-friendly machine learning pipeline that:
+```markdown
+# 🔍 FinTech Compliance System
 
-1. Loads real-world, anonymized credit card transaction data
-2. Explores the data to understand patterns between fraud and legitimate transactions
-3. Preprocesses and balances the data (since fraud cases are extremely rare)
-4. Trains and compares two classification models
-5. Evaluates them using metrics suited for imbalanced data (not just accuracy)
-6. Saves the best-performing model
-7. Deploys it as a live, interactive **Streamlit web app** where anyone can upload transactions or enter values manually and instantly get a fraud prediction
+> An end-to-end financial crime prevention system combining Machine Learning, AML Monitoring, Generative AI, RAG, and KYC Verification — built to simulate real-world fintech compliance workflows.
 
-The goal is to demonstrate an end-to-end ML workflow — from raw data to a usable, deployed tool — in a way that's easy to follow and modify.
-
----
-
-## 📂 Dataset
-
-This project uses the **[Credit Card Fraud Detection dataset](https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud)** from Kaggle.
-
-- ~284,800 transactions made by European cardholders over 2 days
-- Only **0.17%** of transactions are fraudulent — a heavily imbalanced dataset
-- Features:
-  - `Time` — seconds elapsed since the first transaction
-  - `V1`–`V28` — anonymized features generated via PCA (original details hidden for privacy)
-  - `Amount` — transaction amount
-  - `Class` — target label (`0` = legitimate, `1` = fraud)
-
-> ⚠️ The dataset (`creditcard.csv`) is **not included** in this repo due to size/licensing. Download it from Kaggle and place it in the project folder before running the training script.
+![Python](https://img.shields.io/badge/Python-3.10-blue)
+![XGBoost](https://img.shields.io/badge/XGBoost-Fraud%20Detection-red)
+![Gemini](https://img.shields.io/badge/Gemini-GenAI-orange)
+![Pinecone](https://img.shields.io/badge/Pinecone-Vector%20DB-green)
+![Streamlit](https://img.shields.io/badge/Streamlit-Dashboard-ff4b4b)
 
 ---
 
-## 🧠 How It Works
+## 📌 Overview
 
-### 1. Exploratory Data Analysis (EDA)
-Visualizes the severe class imbalance and the distribution of transaction amounts for fraud vs. legitimate transactions.
+Most fraud detection projects stop at predicting whether a transaction is fraudulent. This project goes further by building a five layer compliance system that detects both fraud and money laundering, generates AI powered compliance alerts, answers AML policy questions grounded in FATF regulatory documents, and automates KYC document verification — all in one live dashboard.
 
-### 2. Preprocessing
-- Scales the `Time` and `Amount` columns using `StandardScaler` (the `V1`–`V28` features are already PCA-scaled)
-- Splits data into training and test sets, preserving the fraud/legit ratio (stratified split)
+---
 
-### 3. Handling Class Imbalance — SMOTE
-Since fraud cases are so rare, the model would otherwise barely learn from them. **SMOTE** (Synthetic Minority Over-sampling Technique) generates synthetic fraud examples in the training set so the model can learn fraud patterns more effectively, without touching the test set (to keep evaluation realistic).
+## 🎯 Built For
 
-### 4. Model Training
-Two models are trained and compared:
-| Model | Why it's used |
+This project directly maps to the core workflow of fintech compliance teams working on:
+- Financial Fraud Detection
+- Anti-Money Laundering (AML) initiatives
+- Know Your Customer (KYC) procedures
+- Generative AI and LLM applications
+- RAG pipelines for document analysis and alert summarization
+
+---
+
+## 🏗️ Project Structure
+
+```
+fintech-compliance-system/
+│
+├── fraud_detection.ipynb        # Module 1 — ML Fraud Detection
+├── aml_layer.ipynb              # Module 2 — AML Rule Monitoring
+├── genai_alert.ipynb            # Module 3 — GenAI Alert Summarization
+├── rag_aml_policy.ipynb         # Module 4 — RAG Policy Q&A
+├── kyc_module.ipynb             # Module 5 — KYC Verification
+├── app.py                       # Streamlit Dashboard
+│
+├── fraud_detector_model.pkl     # Saved XGBoost Model
+├── scaler.pkl                   # Saved StandardScaler
+│
+├── test_transactions.csv        # Sample test dataset
+├── kyc_docs/                    # Sample KYC documents
+│   ├── KYC_001.txt
+│   ├── KYC_002.txt
+│   ├── KYC_003.txt
+│   ├── KYC_004.txt
+│   └── KYC_005.txt
+│
+└── README.md
+```
+
+---
+
+## ⚙️ System Architecture
+
+```
+Raw Transactions
+      ↓
+XGBoost Fraud Model → Fraud Probability Score
+      ↓
+AML Rule Engine → Structuring + Round Amount + Velocity Flags
+      ↓
+Combined Risk Scorer → LOW / MEDIUM / HIGH / CRITICAL
+      ↓
+GenAI Alert (Gemini) → Compliance Alert Paragraph
+      ↓
+RAG Policy Q&A (Pinecone + FATF) → Regulatory Justification
+      ↓
+KYC Module → Field Extraction + Validation
+      ↓
+Streamlit Dashboard → 4 Page Live Interface
+```
+
+---
+
+## 📦 Module Breakdown
+
+### Module 1 — Machine Learning Fraud Detection
+- Dataset: Kaggle Credit Card Fraud Detection (284,807 transactions)
+- Severe class imbalance handled with SMOTE oversampling
+- Model: XGBoost Classifier with scale_pos_weight=200
+- Output: Fraud probability score (0.0 to 1.0) per transaction
+- Performance: ROC-AUC above 0.99
+
+### Module 2 — AML Rule Based Monitoring
+
+Three compliance rules applied on top of the ML model:
+
+| Rule | Detection | Real World Pattern |
+|---|---|---|
+| Structuring Flag | Amount $8,000–$9,999 | Deliberately staying below $10,000 reporting threshold |
+| Round Amount Flag | Amount divisible by 500 | Deliberate money movement not organic spending |
+| Velocity Flag | Same pattern 3+ times in short window | Layering to obscure money origin |
+
+Combined Risk Formula:
+```
+combined_risk = (fraud_probability × 0.7) + (aml_flag_count × 0.1)
+```
+
+| Score | Risk Level | Action |
+|---|---|---|
+| 0.00 – 0.29 | 🟢 LOW | ALLOW |
+| 0.30 – 0.59 | 🟡 MEDIUM | ALLOW |
+| 0.60 – 0.84 | 🟠 HIGH | REVIEW |
+| 0.85 – 1.00 | 🔴 CRITICAL | BLOCK |
+
+### Module 3 — GenAI Alert Summarization
+- Every HIGH and CRITICAL transaction gets a professional compliance alert
+- Generated by Gemini LLM acting as a senior compliance analyst
+- Output mirrors real compliance case management system narratives
+- Covers what was flagged, what crime it is consistent with, and recommended action
+
+### Module 4 — RAG Pipeline for AML Policy Q&A
+- FATF 40 Recommendations PDF processed using PyMuPDF
+- Document chunked into 500 character segments with 50 character overlap
+- Chunks embedded using all-MiniLM-L6-v2 sentence transformer
+- Embeddings stored in Pinecone vector database
+- Questions answered by Gemini grounded in retrieved policy context only
+- Flagged transactions automatically queried for regulatory justification
+
+### Module 5 — KYC Document Verification
+- Supports PDF and TXT KYC documents
+- Gemini extracts: Full Name, Date of Birth, National ID, Address, ID Expiry
+- Validation checks: Age under 18, Expired ID, Expiring within 90 days, Missing fields
+- Output: CLEAR / MEDIUM RISK / HIGH RISK / REVIEW with detailed check results
+
+---
+
+## 🖥️ Streamlit Dashboard
+
+### Page 1 — Transaction Scoring
+Upload any transaction CSV and instantly see fraud scores, AML flags, combined risk scores, risk levels, and recommended actions in a color coded table. Download the full scored dataset.
+
+### Page 2 — Alert Summary
+Select any HIGH or CRITICAL transaction from a dropdown. View all transaction details and AML flags. Click one button to generate a professional Gemini powered compliance alert paragraph.
+
+### Page 3 — AML Policy Q&A
+Type any AML compliance question or click a sample question. The RAG system retrieves relevant FATF policy chunks from Pinecone and Gemini generates a grounded answer. Full conversation history maintained.
+
+### Page 4 — KYC Verification
+Upload any KYC document in PDF or TXT format. Gemini extracts all fields automatically. Validation checks run instantly showing green ticks for passed checks and red crosses for violations. Final KYC status displayed as a colored banner.
+
+---
+
+## 🛠️ Tech Stack
+
+| Category | Technology |
 |---|---|
-| **Logistic Regression** | Simple, fast, interpretable baseline |
-| **Random Forest** | Captures non-linear patterns, usually more accurate |
-
-An **Isolation Forest** (unsupervised anomaly detector) is also trained as a bonus model that flags unusual transactions without needing labeled fraud examples.
-
-### 5. Evaluation
-Because fraud is rare, accuracy alone is misleading (a model predicting "legit" every time would still be ~99.8% accurate). Instead, the project evaluates models using:
-- **ROC-AUC** — how well the model ranks fraud vs legit transactions
-- **Average Precision** — performance specifically on the rare fraud class
-- **F1 Score** — balance between precision and recall
-- A full **classification report** (precision, recall per class)
-
-The model with the highest ROC-AUC is automatically selected and saved as the deployment model.
-
-### 6. Deployment — Streamlit App
-The saved model is loaded into a **Streamlit** web app with two ways to use it:
-- **📁 Upload CSV** — score a batch of transactions at once and see predictions in a table
-- **✍️ Manual Entry** — enter a single transaction's values and get an instant fraud/legit prediction with a probability score
+| Language | Python 3.10 |
+| ML Model | XGBoost |
+| Preprocessing | Scikit-learn, Pandas, NumPy |
+| Class Balancing | SMOTE (imbalanced-learn) |
+| PDF Processing | PyMuPDF (fitz) |
+| Embeddings | Sentence Transformers (all-MiniLM-L6-v2) |
+| Vector Database | Pinecone |
+| LLM | Google Gemini API |
+| Dashboard | Streamlit |
+| Deployment | Pyngrok + Google Colab |
+| Storage | Google Drive |
 
 ---
 
-## 🗂️ Project Structure
+## 📊 Model Performance
 
-```
-├── train_fraud_model.py        # Full training pipeline (EDA → preprocessing → SMOTE → training → evaluation → saving)
-├── app.py                      # Streamlit app for live predictions
-├── creditcard.csv              # Dataset (download from Kaggle, not included)
-└── fraud_model_outputs/        # Generated after training
-    ├── fraud_model.pkl         # Best trained model
-    ├── anomaly_model.pkl       # Isolation Forest (unsupervised)
-    ├── scaler.pkl              # Fitted StandardScaler
-    ├── columns.pkl             # Feature column order
-    └── eda.png                 # EDA visualization
-```
+| Metric | Score |
+|---|---|
+| ROC-AUC | 0.99+ |
+| Precision (Fraud) | High |
+| Recall (Fraud) | High |
+| F1 Score (Fraud) | 0.85+ |
 
 ---
 
 ## 🚀 How to Run
 
-### Option A: Google Colab
-1. Upload `creditcard.csv` to your Colab session
-2. Run the training script:
-   ```python
-   !python train_fraud_model.py
-   ```
-3. Write and launch the Streamlit app using `pyngrok` to get a public link (see deployment steps in the project notes)
-
-### Option B: Local Machine
+### Step 1 — Clone the Repository
 ```bash
-pip install streamlit pandas scikit-learn imbalanced-learn joblib
+git clone https://github.com/yourusername/fintech-compliance-system.git
+```
 
-# 1. Train the model
-python train_fraud_model.py
+### Step 2 — Open in Google Colab
+Upload all notebooks to Google Colab and mount your Google Drive.
 
-# 2. Launch the app
+### Step 3 — Install Dependencies
+```bash
+pip install xgboost scikit-learn imbalanced-learn pandas numpy pymupdf
+pip install pinecone-client sentence-transformers google-generativeai
+pip install streamlit joblib pyngrok
+```
+
+### Step 4 — Add API Keys
+In app.py set your Gemini API key from aistudio.google.com and your Pinecone API key from app.pinecone.io.
+
+### Step 5 — Run Notebooks in Order
+Run fraud_detection.ipynb first to train and save the model. Then run aml_layer.ipynb, genai_alert.ipynb, and rag_aml_policy.ipynb in order.
+
+### Step 6 — Launch Dashboard
+```bash
 streamlit run app.py
 ```
-Then open the local URL Streamlit prints (usually `http://localhost:8501`).
 
 ---
 
-## 📊 Example Output
+## 💡 Key Insights
 
-After training, you'll see console output like:
+A transaction can score LOW fraud probability but still be flagged HIGH risk due to AML rules. This is exactly how real compliance systems work — fraud and money laundering are two different crimes requiring two different detection approaches. Combining both into one system is what makes this project unique.
 
+---
+
+## 🌍 Real World Relevance
+
+| This System | Real Bank Equivalent |
+|---|---|
+| XGBoost Fraud Model | Real-time fraud engine |
+| AML Rule Layer | Transaction Monitoring System (TMS) |
+| Combined Risk Score | Daily compliance analyst review queue |
+| GenAI Alerts | Automated case narrative generation |
+| RAG Policy Q&A | Regulatory knowledge base |
+| KYC Module | Automated customer onboarding verification |
+
+---
+
+## 🔮 Future Enhancements
+
+- [ ] Network graph analysis for detecting money mule networks
+- [ ] Real time transaction streaming using Apache Kafka
+- [ ] SAR (Suspicious Activity Report) auto generation
+- [ ] Multi-language KYC document support
+- [ ] Enhanced entity resolution for customer deduplication
+
+---
+
+## 👤 Author
+
+Data Science Trainer and Practitioner
+Built as a fintech compliance portfolio project demonstrating applied ML, GenAI, RAG, and compliance domain knowledge.
+
+---
+
+## 📄 License
+
+MIT License — free to use and modify with attribution.
+
+---
+
+## ⭐ If this project helped you, please give it a star on GitHub!
 ```
---- Random Forest ---
-ROC-AUC: 0.97xx | Avg Precision: 0.85xx | F1: 0.86xx
-              precision    recall  f1-score   support
-       Legit       1.00      1.00      1.00     56864
-       Fraud       0.xx      0.xx      0.xx        98
-```
-
-And the Streamlit app lets you interactively test transactions and see results like:
-
-> 🚨 Likely FRAUDULENT transaction — probability: 92.4%
-
----
-
-## ⚠️ Limitations & Next Steps
-
-- The `V1`–`V28` features are anonymized PCA components, so the model can't explain *why* a transaction looks fraudulent in real-world terms.
-- SMOTE creates synthetic data only for training — real-world deployment would need ongoing retraining as fraud patterns evolve.
-- Possible improvements: add XGBoost/LightGBM, threshold tuning for business-specific cost tradeoffs (false positives vs false negatives), or integrating the Isolation Forest's anomaly score as a secondary risk signal in the app.
-
----
-
-## 📜 Credits
-
-- Dataset: [ULB Machine Learning Group](https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud) via Kaggle
-- Built with: `scikit-learn`, `imbalanced-learn`, `pandas`, `matplotlib`, `seaborn`, `Streamlit`
